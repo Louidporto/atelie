@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LOJA ATELIE POLIANA DE JESUS</title>
+    <!-- Importação da Fonte Profissional Google Fonts (Poppins) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <!-- Esquerda: Botão do Menu Hambúrguer -->
+      <button id="menu-btn" aria-label="Abrir Menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <div class="logo-container">
+
+        <img src="imagens/logo.png" alt="Logo da Loja" class="logo-img" />
+
+        <div class="marca-info">
+          <h1>ATELIE POLIANA DE JESUS</h1>
+          <p>Decoraçao e Aluguel de Brinquedos Para Sua Festa!!</p>
+        </div>
+                
+      </div>
+
+      <!-- Direita: Botão do Carrinho -->
+      <button id="cart-btn">🛒<span id="cart-count">0</span></button>
+    </header>
+
+    <main>
+      <!-- Seção de Busca e Filtros -->
+      <section class="filtros-container">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Pesquisar itens de festa..."
+        />
+
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="kits">Kits</button>
+          <button class="filter-btn" data-filter="mesas">Mesas</button>
+          <button class="filter-btn" data-filter="paineis">Painéis</button>
+        </div>
+      </section>
+
+      <!-- Grid de Produtos (Onde o JS vai injetar os cards) -->
+      <!-- Grid onde o JS vai injetar os dois cards lado a lado -->
+      <section class="produtos-grid" id="produtos-container">
+        <!-- O JavaScript vai preencher aqui sozinho! -->
+      </section>
+
+      <!-- SEÇÃO DE PROVA SOCIAL -->
+      <section class="social-proof-section">
+        <h2>Festas Reais Realizadas 📸</h2>
+        <p class="section-subtitle">
+          Veja como nossas peças transformaram momentos especiais!
+        </p>
+
+        <div class="proof-grid">
+          <div class="proof-card">
+            <img src="festa1.jpg" alt="Festa Cliente 1" />
+            <p class="client-name">
+              "Atendimento impecável e peças super bem conservadas!"
+            </p>
+            <span>- Mariana S. (Aniversário de 1 ano)</span>
+          </div>
+          <div class="proof-card">
+            <img src="festa2.jpg" alt="Festa Cliente 2" />
+            <p class="client-name">
+              "A mesa rústica deixou o noivado perfeito. Recomendo muito!"
+            </p>
+            <span>- Carlos & Juliana (Noivado)</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- RODAPÉ (FOOTER) -->
+    <footer>
+      <div class="footer-content">
+        <h3>Nome da Loja - Aluguel de Itens para Festas</h3>
+        <p>Transformando suas comemorações em momentos inesquecíveis.</p>
+        <p class="footer-contact">
+          📲 WhatsApp: (31) 99999-9999 | 📍 cONTAGEM - MG
+        </p>
+        <p class="copyright">
+          &copy; 2026 ATELIE POLIANA DE JESUS. Todos os direitos reservados.
+        </p>
+      </div>
+    </footer>
+
+    <div id="overlay" class="overlay"></div>
+    <!-- Fundo escuro ao abrir o menu -->
+
+    <aside id="sidebar-menu" class="sidebar">
+      <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button id="close-menu-btn">&times;</button>
+      </div>
+      <nav class="sidebar-links">
+        <a href="#produtos">📦 Catálogo de Festas</a>
+        <a href="#prova-social">📸 Festas Realizadas</a>
+        <a href="#sobre">ℹ️ Sobre Nós</a>
+        <a href="#contato">📞 Falar com Atendente</a>
+        <hr />
+        <a href="admin.html" class="admin-link">🔒 Painel do Lojista</a>
+      </nav>
+    </aside>
+
+    <!-- GAVETA DO CARRINHO (DRAWER) -->
+    <div id="cart-overlay" class="cart-overlay"></div>
+
+    <aside id="cart-drawer" class="cart-drawer">
+      <div class="cart-header">
+        <h2>Seu Carrinho de Orçamento 🛒</h2>
+        <button id="close-cart-btn">&times;</button>
+      </div>
+
+      <div class="cart-body">
+        <!-- Lista de itens adicionados -->
+        <div id="cart-items-container">
+          <p class="cart-empty-msg">Seu carrinho está vazio.</p>
+        </div>
+
+        <!-- Formulário de dados para o WhatsApp (Oculto inicialmente) -->
+        <div class="cart-form" id="cart-form-section" style="display: none">
+          <hr class="cart-divider" />
+          <h3>Dados para a Locação</h3>
+
+          <div class="form-group">
+            <label for="client-name">Seu Nome</label>
+            <input type="text" id="client-name" placeholder="Ex: Ana Silva" />
+          </div>
+
+          <div class="form-group">
+            <label for="party-date">Data da Festa</label>
+            <input type="date" id="party-date" />
+          </div>
+
+          <div class="form-group">
+            <label for="client-neighborhood">Bairro / Cidade da Entrega</label>
+            <input
+              type="text"
+              id="client-neighborhood"
+              placeholder="Ex: Centro, Belo Horizonte"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Rodapé do Carrinho com os Botões de Ação -->
+      <div class="cart-footer" id="cart-footer-section" style="display: none">
+        <div class="cart-total">
+          <span>Total Estimado:</span>
+          <strong id="cart-total-value">R$ 0,00</strong>
+        </div>
+
+        <!-- Botão para retornar à vitrine de produtos -->
+        <button id="continue-shopping-btn" class="btn-secondary">
+          🛍️ Continuar Comprando
+        </button>
+
+        <!-- Botão que revela o formulário de dados da locação -->
+        <button id="proceed-checkout-btn" class="btn-primary">
+          📋 Confirmar Pedido
+        </button>
+
+        <!-- Botão final para disparar o WhatsApp (Oculto até clicar em Confirmar Pedido) -->
+        <button
+          id="whatsapp-checkout-btn"
+          class="btn-whatsapp"
+          style="display: none"
+        >
+          📲 Enviar Orçamento via WhatsApp
+        </button>
+      </div>
+    </aside>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
