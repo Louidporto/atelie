@@ -265,25 +265,48 @@ header {
    ========================================================== */
 .produtos-grid {
   display: grid;
-  /* No telemóvel exibe 2 colunas; no computador ajusta automaticamente com largura ideal de 220px cada */
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  /* Força 2 colunas iguais em telas pequenas (telemóvel) e expande em telas maiores */
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 12px;
   margin-top: 10px;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
 }
-
+@media (min-width: 768px) {
+  .produtos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 20px;
+  }
+}
 .card-produto {
   background-color: var(--white);
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border: 1px solid #eee; /* Linha de contorno subtil estilo app */
+}
+/* Ajuste do carrossel/imagem dentro do card do produto */
+.card-image-slider {
+  position: relative;
+  width: 100%;
+  height: 150px; /* Altura ideal proporcional para telemóvel */
+  overflow: hidden;
+  background-color: #f9f9f9;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
+.slider-track img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
 .card-produto img {
   width: 100%;
   height: 130px;
@@ -294,41 +317,51 @@ header {
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .card-info h3 {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: var(--text-color);
-  line-height: 1.2;
+  line-height: 1.25;
+  font-weight: 500;
+  /* Limita o título a 2 linhas com reticências se for muito longo */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-info .preco {
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #27ae60; /* Verde destaque para preço */
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #27ae60;
+  margin-top: 4px;
 }
 
 .card-info .preco span {
-  font-size: 0.75rem;
-  color: #7f8c8d;
+  font-size: 0.7rem;
+  color: #888;
   font-weight: normal;
 }
 
+/* Botão "Adicionar" compacto estilo app */
 .add-cart-btn {
-  background-color: var(--acent-color);
-  border: none;
-  border-radius: 8px;
+  background-color: #fff2ed;
+  border: 1px solid var(--acent-color);
+  border-radius: 6px;
   padding: 6px;
-  font-weight: bold;
-  font-size: 0.85rem;
-  color: var(--text-color);
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: #e67e22;
   cursor: pointer;
-  transition: opacity 0.2s;
+  margin-top: 6px;
+  transition: background-color 0.2s;
 }
 
 .add-cart-btn:hover {
-  opacity: 0.85;
+  background-color: var(--acent-color);
+  color: var(--text-color);
 }
 
 /* ==========================================================
