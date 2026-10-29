@@ -22,14 +22,14 @@ body {
 }
 
 main {
-  padding-top: 110px; /* Compensa a altura do header fixo */
+  padding-top: 160px; /* Compensa a altura do header fixo */
   padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 20px;
 }
 @media (min-width: 768px) {
   main {
-    padding-top: 95px;
+    padding-top: 100px;
   }
 }
 /* ==========================================================
@@ -43,7 +43,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 12px;
   background: linear-gradient(135deg, #e7a7a9, #e29799); /* Degradê suave elegante */
   color: var(--white);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra suave de elevação */
@@ -82,9 +82,7 @@ header {
     opacity: 0.9;
     margin-top: 2px;
   }
-  .marca-info h1 {
-    font-size: 1.1rem;
-  }
+
 }
 #cart-btn {
   background-color: var(--acent-color);
