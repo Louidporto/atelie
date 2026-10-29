@@ -829,9 +829,9 @@ footer {
   top: 0;
   right: -350px;
   width: 320px;
-  max-width: 88%;
+  max-width: 60%;
   height: 100vh;
-  max-height: 100dvh; /* Garante que respeite a barra do navegador do telemóvel */
+  max-height: 80dvh; /* Garante que respeite a barra do navegador do telemóvel */
   background-color: var(--white);
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
   z-index: 3000;
