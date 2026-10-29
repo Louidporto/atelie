@@ -347,7 +347,7 @@ if (whatsappBtn) {
     mensagem += `\n💰 *Total Estimado das Peças:* R$ ${total.toFixed(2).replace(".", ",")}\n\n`;
     mensagem += `Aguardo confirmação de disponibilidade e cálculo do frete!`;
 
-    const telefoneLoja = "5531999999999";
+    const telefoneLoja = "31988712203";
     const urlWhatsApp = `https://wa.me/${telefoneLoja}?text=${encodeURIComponent(mensagem)}`;
 
     window.open(urlWhatsApp, "_blank");
