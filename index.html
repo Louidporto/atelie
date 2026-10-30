@@ -43,11 +43,9 @@
           placeholder="Pesquisar itens de festa..."
         />
 
-        <div class="filter-buttons">
+        <div class="filter-buttons" id="filter-buttons-container">
           <button class="filter-btn active" data-filter="all">Todos</button>
-          <button class="filter-btn" data-filter="kits">Kits</button>
-          <button class="filter-btn" data-filter="mesas">Mesas</button>
-          <button class="filter-btn" data-filter="paineis">Painéis</button>
+          <!-- O JavaScript vai injetar dinamicamente as novas categorias aqui! -->
         </div>
       </section>
 
@@ -57,29 +55,21 @@
         <!-- O JavaScript vai preencher aqui sozinho! -->
       </section>
 
-      <!-- SEÇÃO DE PROVA SOCIAL -->
+      <!-- SEÇÃO DE PROVA SOCIAL DINÂMICA -->
       <section class="social-proof-section">
         <h2>Festas Reais Realizadas 📸</h2>
         <p class="section-subtitle">
           Veja como nossas peças transformaram momentos especiais!
         </p>
 
-        <div class="proof-grid">
-          <div class="proof-card">
-            <img src="festa1.jpg" alt="Festa Cliente 1" />
-            <p class="client-name">
-              "Atendimento impecável e peças super bem conservadas!"
-            </p>
-            <span>- Mariana S. (Aniversário de 1 ano)</span>
-          </div>
-          <div class="proof-card">
-            <img src="festa2.jpg" alt="Festa Cliente 2" />
-            <p class="client-name">
-              "A mesa rústica deixou o noivado perfeito. Recomendo muito!"
-            </p>
-            <span>- Carlos & Juliana (Noivado)</span>
-          </div>
+        <!-- Container onde o JavaScript vai injetar os posts salvos no Firebase -->
+        <div id="instagram-feed-container" class="instagram-grid">
+          <p style="color: #666; font-size: 0.9rem;">A carregar posts do Instagram...</p>
         </div>
+      </section>
+
+      <!-- Script oficial do Instagram para renderizar os players (obrigatório) -->
+      <script async src="//www.instagram.com/embed.js"></script>
       </section>
     </main>
 
@@ -108,8 +98,8 @@
       <nav class="sidebar-links">
         <a href="#produtos">📦 Catálogo de Festas</a>
         <a href="#prova-social">📸 Festas Realizadas</a>
-        <a href="#sobre">ℹ️ Sobre Nós</a>
-        <a href="#contato">📞 Falar com Atendente</a>
+        <!-- Link dinâmico do Instagram injetado aqui -->
+        <a id="sidebar-instagram-link" href="#" target="_blank" style="display: none;">📸 Siga-nos no Instagram</a>
         <hr />
         <a href="admin.html" class="admin-link">🔒 Painel do Lojista</a>
       </nav>
@@ -184,6 +174,7 @@
       </div>
     </aside>
 
+    
     <script type="module" src="script.js"></script>
   </body>
 </html>
