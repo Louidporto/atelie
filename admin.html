@@ -13,7 +13,7 @@
     <div class="logo-container">
       <div class="marca-info">
         <h1>Painel do Lojista 🔒</h1>
-        <p>Gestão de Produtos e Prova Social</p>
+        <p>Gestão de Produtos, Prova Social e Dados da Loja</p>
       </div>
     </div>
     <div class="admin-header-actions">
@@ -66,6 +66,7 @@
       <div class="admin-tabs">
         <button class="tab-btn active" data-tab="tab-produtos">📦 Gestão de Produtos</button>
         <button class="tab-btn" data-tab="tab-provas">📸 Festas Realizadas</button>
+        <button class="tab-btn" data-tab="tab-config">⚙️ Dados da Empresa</button>
       </div>
 
       <!-- ABA 1: PRODUTOS -->
@@ -73,7 +74,6 @@
         <section class="admin-card">
           <div class="card-header-flex">
             <h2>Itens Cadastrados no Acervo</h2>
-            <!-- BOTÃO COM ÍCONE PARA ABRIR O MODAL -->
             <button id="btn-open-modal-prod" class="btn-add-action">
               <span>➕</span> Novo Item
             </button>
@@ -98,13 +98,13 @@
         </section>
       </div>
 
-      <!-- ABA 2: PROVA SOCIAL -->
+      <!-- ABA 2: PROVA SOCIAL (INSTAGRAM) -->
       <div id="tab-provas" class="tab-content" style="display: none;">
         <section class="admin-card">
           <div class="card-header-flex">
-            <h2>Festas Exibidas no Site</h2>
+            <h2>Posts do Instagram (Prova Social)</h2>
             <button id="btn-open-modal-proof" class="btn-add-action">
-              <span>➕</span> Nova Festa
+              <span>➕</span> Novo Post Instagram
             </button>
           </div>
 
@@ -112,9 +112,8 @@
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Foto</th>
-                  <th>Cliente/Evento</th>
-                  <th>Depoimento</th>
+                  <th>Link do Post</th>
+                  <th>Data de Cadastro</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -123,6 +122,59 @@
               </tbody>
             </table>
           </div>
+        </section>
+      </div>
+
+      <!-- ABA 3: CONFIGURAÇÕES / DADOS CADASTRAIS -->
+      <div id="tab-config" class="tab-content" style="display: none;">
+        <section class="admin-card">
+          <div class="card-header-flex">
+            <h2>Dados Cadastrais da Loja ⚙️</h2>
+          </div>
+
+          <form id="config-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="config-logo-file">Logotipo da Loja (Nova Imagem)</label>
+                <input type="file" id="config-logo-file" accept="image/*">
+                <input type="hidden" id="config-logo-base64" value="">
+                <small style="color: #666; font-size: 0.75rem;">Selecione uma imagem quadrada para substituir a logo atual.</small>
+
+                <label for="config-nome">Nome da Loja</label>
+                <input type="text" id="config-nome" placeholder="Atelie Poliana de Jesus" required>
+              </div>
+              <div class="form-group">
+                <label for="config-cnpj">CNPJ / CPF</label>
+                <input type="text" id="config-cnpj" placeholder="00.000.000/0001-00">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="config-slogan">Slogan / Descrição do Cabeçalho</label>
+              <input type="text" id="config-slogan" placeholder="Decoração e Aluguel de Brinquedos Para Sua Festa!!" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="config-whatsapp">WhatsApp para Orçamentos (com DDD e DDI)</label>
+                <input type="text" id="config-whatsapp" placeholder="Ex: 5531981198416" required>
+                <small style="color: #666; font-size: 0.75rem;">Formato: código do país (55) + DDD + número (sem espaços ou traços).</small>
+              </div>
+              <div class="form-group">
+                <label for="config-cidade">Cidade / Região de Atendimento</label>
+                <input type="text" id="config-cidade" placeholder="Contagem - MG">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="config-instagram">Link do Perfil do Instagram</label>
+              <input type="url" id="config-instagram" placeholder="https://www.instagram.com/seuatelie">
+            </div>
+
+            <div class="form-buttons" style="margin-top: 20px;">
+              <button type="submit" id="btn-save-config" class="btn-primary">Salvar Configurações</button>
+            </div>
+          </form>
         </section>
       </div>
 
@@ -148,13 +200,8 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="prod-categoria">Categoria</label>
-            <select id="prod-categoria" required>
-              <option value="kits">Kits Completos</option>
-              <option value="mesas">Mesas & Cubos</option>
-              <option value="paineis">Painéis</option>
-              <option value="outros">Outros</option>
-            </select>
+            <label for="prod-categoria">Categoria (Digite)</label>
+            <input type="text" id="prod-categoria" placeholder="Ex: Kits, Mesas, Painéis..." required>
           </div>
           <div class="form-group">
             <label for="prod-preco">Valor da Diária (R$)</label>
@@ -163,11 +210,17 @@
         </div>
 
         <div class="form-group">
-          <label for="prod-imagem-file">Fotos do Produto (Selecione várias)</label>
-          <input type="file" id="prod-imagem-file" accept="image/*" multiple>
-          <small style="color: #666; font-size: 0.75rem;">Podes selecionar mais de uma foto em simultâneo.</small>
-        </div>
+          <label>Gerir Fotos do Produto</label>
+          <small style="color: #666; font-size: 0.75rem; display: block; margin-bottom: 8px;">Pode remover fotos existentes ou adicionar novas imagens à galeria.</small>
+          
+          <!-- Contentor estilo galeria interativa -->
+          <div id="galeria-imagens-container" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <!-- As miniaturas e o botão de adicionar serão injetados dinamicamente aqui -->
+          </div>
 
+          <!-- Input de ficheiro oculto que será acionado pelo botão de adicionar -->
+          <input type="file" id="prod-imagem-file" accept="image/*" multiple style="display: none;">
+        </div>
         <div class="form-buttons">
           <button type="submit" id="btn-save-prod" class="btn-primary">Salvar Produto</button>
           <button type="button" id="btn-cancel-modal-prod" class="btn-secondary">Cancelar</button>
@@ -176,35 +229,23 @@
     </div>
   </div>
 
-  <!-- MODAL FLUTUANTE DE PROVA SOCIAL -->
+  <!-- MODAL FLUTUANTE DE PROVA SOCIAL (INSTAGRAM) -->
   <div id="modal-prova" class="modal-overlay" style="display: none;">
     <div class="modal-card">
       <div class="modal-header">
-        <h2>Cadastrar Festa Real 📸</h2>
+        <h2>Adicionar Post do Instagram 📸</h2>
         <button id="btn-close-modal-proof" class="btn-close-modal">&times;</button>
       </div>
       
       <form id="proof-form">
-        <input type="hidden" id="proof-imagem-base64" value="">
-        
         <div class="form-group">
-          <label for="proof-client">Nome do Cliente e Evento</label>
-          <input type="text" id="proof-client" placeholder="Ex: Mariana S. (Aniversário de 1 ano)" required>
-        </div>
-
-        <div class="form-group">
-          <label for="proof-comment">Depoimento/Comentário</label>
-          <input type="text" id="proof-comment" placeholder="Ex: Atendimento impecável e peças conservadas!" required>
-        </div>
-
-        <div class="form-group">
-          <label for="proof-imagem-file">Fotos da Festa (Selecione várias)</label>
-          <input type="file" id="proof-imagem-file" accept="image/*" multiple required>
-          <small style="color: #666; font-size: 0.75rem;">Podes selecionar mais de uma foto em simultâneo.</small>
+          <label for="proof-url">Link (URL) do Post ou Reels do Instagram</label>
+          <input type="url" id="proof-url" placeholder="https://www.instagram.com/p/C..." required>
+          <small style="color: #666; font-size: 0.75rem;">Cole a URL completa enviada pelo botão compartilhar do Instagram.</small>
         </div>
 
         <div class="form-buttons">
-          <button type="submit" class="btn-primary">Salvar Festa</button>
+          <button type="submit" id="btn-save-proof" class="btn-primary">Salvar Post</button>
           <button type="button" id="btn-cancel-modal-proof" class="btn-secondary">Cancelar</button>
         </div>
       </form>
