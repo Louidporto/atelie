@@ -272,7 +272,7 @@ header {
    ========================================================== */
 .produtos-grid {
   display: grid;
-  /* Força 2 colunas iguais em telas pequenas (telemóvel) e expande em telas maiores */
+  /* Define colunas consistentes para telemóvel (2 colunas) e computadores (mínimo 220px por card) */
   grid-template-columns: repeat(2, 1fr) !important;
   gap: 12px;
   margin-top: 10px;
@@ -280,9 +280,12 @@ header {
   margin-left: auto;
   margin-right: auto;
 }
+
 @media (min-width: 768px) {
   .produtos-grid {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 240px)) !important; 
+    /* Usamos 'auto-fill' com largura máxima travada para o card não esticar sozinho */
+    justify-content: start; /* Alinha os cards sempre à esquerda, sem esticar os vazios */
     gap: 20px;
   }
 }
@@ -376,11 +379,21 @@ header {
    6. SEÇÃO DE PROVA SOCIAL
    ========================================================== */
 .social-proof-section {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 2px dashed rgba(255, 255, 255, 0.4);
+  padding: 40px 20px;
+  text-align: center;
+}
+.embed-wrapper {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  width: 100%;
+  max-width: 540px;
+  margin: 1px auto 0 auto;
 }
 
+.embed-wrapper iframe {
+  border-radius: 8px !important;
+}
 .social-proof-section h2 {
   font-size: 1.2rem;
   color: var(--text-color);
@@ -829,9 +842,9 @@ footer {
   top: 0;
   right: -350px;
   width: 320px;
-  max-width: 60%;
+  max-width: 88%;
   height: 100vh;
-  max-height: 80dvh; /* Garante que respeite a barra do navegador do telemóvel */
+  max-height: 100dvh; /* Garante que respeite a barra do navegador do telemóvel */
   background-color: var(--white);
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
   z-index: 3000;
@@ -1131,3 +1144,4 @@ footer {
 .btn-zoom-overlay:hover {
   background-color: rgba(0, 0, 0, 0.8);
 }
+
