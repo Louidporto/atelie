@@ -5,11 +5,14 @@ import { db } from "./firebase.js";
 import {
   collection,
   getDocs,
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Arrays dinâmicos
 let produtos = [];
 let carrinho = [];
+let telefoneLojaGlobal = "5531981198416"; // fallback padrão
 
 // ==========================================================
 // SELEÇÃO DOS ELEMENTOS DO DOM (Área Pública & Carrinho)
@@ -41,8 +44,54 @@ const produtosContainer = document.getElementById("produtos-container");
 const searchInput = document.getElementById("search-input");
 const filterBtns = document.querySelectorAll(".filter-btn");
 
-// Container de Prova Social na página pública
-const proofGridContainer = document.querySelector(".proof-grid");
+// ==========================================================
+// CARREGAR CONFIGURAÇÕES GLOBAIS DA LOJA NO SITE PÚBLICO
+// ==========================================================
+async function carregarConfiguracoesPublicas() {
+  try {
+    const docRef = doc(db, "configuracoes", "loja");
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+
+      if (data.whatsapp) {
+        telefoneLojaGlobal = data.whatsapp;
+      }
+
+      // Atualiza o Nome da Loja
+      const h1Loja = document.querySelector(".marca-info h1");
+      if (h1Loja && data.nome) h1Loja.textContent = data.nome;
+
+      // Atualiza o Slogan
+      const pSlogan = document.querySelector(".marca-info p");
+      if (pSlogan && data.slogan) pSlogan.textContent = data.slogan;
+
+      // Atualiza a Logo da Loja se o admin tiver alterado
+      if (data.logo) {
+        const logoImgs = document.querySelectorAll(".logo-img");
+        logoImgs.forEach(img => {
+          img.src = data.logo;
+        });
+      }
+
+      // Atualiza o link do Instagram no menu lateral se preenchido
+      const instaLinkElement = document.getElementById("sidebar-instagram-link");
+      if (instaLinkElement && data.instagram) {
+        instaLinkElement.href = data.instagram;
+        instaLinkElement.style.display = "block";
+      }
+
+      // Atualiza Rodapé
+      const footerContato = document.querySelector(".footer-contact");
+      if (footerContato && data.whatsapp) {
+        footerContato.innerHTML = `📲 WhatsApp: (${data.whatsapp.substring(2,4)}) ${data.whatsapp.substring(4,9)}-${data.whatsapp.substring(9)} | 📍 ${data.cidade || 'Contagem - MG'}`;
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao carregar configurações públicas:", error);
+  }
+}
 
 // ==========================================================
 // 1. CARREGAR PRODUTOS DO FIRESTORE (VITRINE)
@@ -76,6 +125,7 @@ async function carregarProdutosPublicos() {
     }
 
     renderizarProdutos(produtos);
+    gerarBotoesFiltroDinamicos();
   } catch (error) {
     console.error("Erro ao carregar produtos públicos:", error);
     produtosContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: #e74c3c;">Erro ao carregar o catálogo da nuvem.</p>`;
@@ -83,57 +133,44 @@ async function carregarProdutosPublicos() {
 }
 
 // ==========================================================
-// 2. CARREGAR PROVA SOCIAL DO FIRESTORE (FESTAS REAIS)
+// 2. CARREGAR PROVA SOCIAL DO FIRESTORE (INSTAGRAM EMBEDS)
 // ==========================================================
 async function carregarProvaSocialPublica() {
-  if (!proofGridContainer) return;
+  const container = document.getElementById("instagram-feed-container");
+  if (!container) return;
 
   try {
     const querySnapshot = await getDocs(collection(db, "provas_sociais"));
 
     if (querySnapshot.empty) {
-      proofGridContainer.innerHTML = `<p style="color: #666; font-size: 0.9rem;">Nenhuma festa cadastrada ainda.</p>`;
+      container.innerHTML = `<p style="color: #666; font-size: 0.9rem; text-align: center;">Nenhuma festa cadastrada ainda.</p>`;
       return;
     }
 
-    proofGridContainer.innerHTML = "";
+    container.innerHTML = "";
 
     querySnapshot.forEach((docSnap) => {
-      const prova = docSnap.data();
-      const listaImagens =
-        prova.imagens && prova.imagens.length > 0
-          ? prova.imagens
-          : prova.imagem
-            ? [prova.imagem]
-            : ["https://via.placeholder.com/400"];
-
-      let imagensHtml = "";
-      let dotsHtml = "";
-
-      listaImagens.forEach((imgSrc, index) => {
-        // Cada imagem agora chama a função de zoom passando a si mesma
-        imagensHtml += `<img src="${imgSrc}" alt="Festa Cliente" onclick="abrirZoomModal('${imgSrc}')" style="cursor: zoom-in;">`;
-        dotsHtml += `<div class="slider-dot ${index === 0 ? "active" : ""}"></div>`;
-      });
-
-      const proofCardHtml = `
-        <div class="proof-card">
-          <div class="card-image-slider">
-            <div class="slider-track" onscroll="atualizarPontoAtivo(this)">
-              ${imagensHtml}
-            </div>
-            ${listaImagens.length > 1 ? `<div class="slider-dots">${dotsHtml}</div>` : ""}
-          </div>
-          <p class="client-name">"${prova.comentario}"</p>
-          <span>- ${prova.cliente}</span>
+      const data = docSnap.data();
+      
+      const embedHtml = `
+        <div class="embed-wrapper" style="margin-bottom: 20px;">
+          <blockquote class="instagram-media" 
+            data-instgrm-permalink="${data.url}" 
+            data-instgrm-version="14">
+          </blockquote>
         </div>
       `;
-      proofGridContainer.innerHTML += proofCardHtml;
+      container.innerHTML += embedHtml;
     });
+
+    if (window.instgrm && window.instgrm.Embeds) {
+      window.instgrm.Embeds.process();
+    }
   } catch (error) {
-    console.error("Erro ao carregar prova social:", error);
+    console.error("Erro ao carregar prova social do Instagram:", error);
   }
 }
+
 // ==========================================================
 // 3. LÓGICA DO MENU E CARRINHO
 // ==========================================================
@@ -198,7 +235,6 @@ function renderizarProdutos(lista) {
     let dotsHtml = "";
 
     listaImagens.forEach((imgSrc, index) => {
-      // Cada imagem do produto agora abre o zoom dela própria ao ser clicada
       imagensHtml += `<img src="${imgSrc}" alt="${produto.nome}" onclick="abrirZoomModal('${imgSrc}')" style="cursor: zoom-in;">`;
       dotsHtml += `<div class="slider-dot ${index === 0 ? "active" : ""}"></div>`;
     });
@@ -221,36 +257,67 @@ function renderizarProdutos(lista) {
     produtosContainer.innerHTML += cardHtml;
   });
 }
+
 // ==========================================================
 // 5. FILTROS E BUSCA
 // ==========================================================
+// ==========================================================
+// GERAR FILTROS DINÂMICOS COM COMPATIBILIDADE EXATA
+// ==========================================================
+function gerarBotoesFiltroDinamicos() {
+  const filterContainer = document.getElementById("filter-buttons-container");
+  if (!filterContainer) return;
+
+  // Normaliza as categorias (tudo em minúsculas e sem espaços extras nas pontas)
+  const categoriasUnicas = [...new Set(produtos.map(p => p.categoria ? p.categoria.trim().toLowerCase() : ""))].filter(Boolean);
+
+  let botoesHtml = `<button class="filter-btn active" data-filter="all">Todos</button>`;
+
+  categoriasUnicas.forEach(cat => {
+    // Formata a primeira letra maiúscula apenas para exibição bonita no botão
+    const catFormatada = cat.charAt(0).toUpperCase() + cat.slice(1);
+    // Armazena o valor limpo em minúsculas no data-filter para bater certo na busca
+    botoesHtml += `<button class="filter-btn" data-filter="${cat}">${catFormatada}</button>`;
+  });
+
+  filterContainer.innerHTML = botoesHtml;
+
+  // Reatribui os eventos de clique aos novos botões criados
+  const novosFilterBtns = filterContainer.querySelectorAll(".filter-btn");
+  novosFilterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      novosFilterBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      filtrarProdutos();
+    });
+  });
+}
+
+// ==========================================================
+// FILTRAGEM CORRIGIDA (IGNORANDO DIFERENÇAS DE LETRAS)
+// ==========================================================
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    filtrarProdutos();
+  });
+}
 function filtrarProdutos() {
-  const termoBusca = searchInput.value.toLowerCase();
+  const termoBusca = searchInput ? searchInput.value.toLowerCase().trim() : "";
   const btnAtivo = document.querySelector(".filter-btn.active");
   const categoriaAtiva = btnAtivo ? btnAtivo.dataset.filter : "all";
 
   const produtosFiltrados = produtos.filter((produto) => {
-    const bateNome = produto.nome.toLowerCase().includes(termoBusca);
-    const bateCategoria =
-      categoriaAtiva === "all" || produto.categoria === categoriaAtiva;
+    const nomeProduto = produto.nome ? produto.nome.toLowerCase() : "";
+    const categoriaProduto = produto.categoria ? produto.categoria.trim().toLowerCase() : "";
+
+    const bateNome = nomeProduto.includes(termoBusca);
+    const bateCategoria = categoriaAtiva === "all" || categoriaProduto === categoriaAtiva;
+
     return bateNome && bateCategoria;
   });
 
   renderizarProdutos(produtosFiltrados);
 }
-
-if (searchInput) {
-  searchInput.addEventListener("input", filtrarProdutos);
-}
-
-filterBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    filterBtns.forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    filtrarProdutos();
-  });
-});
-
 // ==========================================================
 // 6. GERENCIAMENTO DO CARRINHO
 // ==========================================================
@@ -347,8 +414,8 @@ if (whatsappBtn) {
     mensagem += `\n💰 *Total Estimado das Peças:* R$ ${total.toFixed(2).replace(".", ",")}\n\n`;
     mensagem += `Aguardo confirmação de disponibilidade e cálculo do frete!`;
 
-    const telefoneLoja = "31988712203";
-    const urlWhatsApp = `https://wa.me/${telefoneLoja}?text=${encodeURIComponent(mensagem)}`;
+    // Utiliza o número dinâmico carregado do Firestore
+    const urlWhatsApp = `https://wa.me/${telefoneLojaGlobal}?text=${encodeURIComponent(mensagem)}`;
 
     window.open(urlWhatsApp, "_blank");
   });
@@ -358,6 +425,7 @@ if (whatsappBtn) {
 // 8. INICIALIZAÇÃO
 // ==========================================================
 document.addEventListener("DOMContentLoaded", () => {
+  carregarConfiguracoesPublicas();
   carregarProdutosPublicos();
   carregarProvaSocialPublica();
   atualizarContadorCarrinho();
